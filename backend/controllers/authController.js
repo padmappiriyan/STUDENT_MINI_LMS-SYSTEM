@@ -3,6 +3,8 @@ import User from '../models/User.js';
 import validator from 'validator';
 import validatePassword from '../utils/validatePassword.js';
 import bcrypt from 'bcryptjs';
+import { populate } from 'dotenv';
+import mongoose from "mongoose";
 
 export const register = async (req, res) => {
   try {
@@ -136,5 +138,84 @@ export const getAllUsers = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+export const getUserCourses = async (req, res) => {
+  try {
+    const userId = new mongoose.Types.ObjectId(req.user.id);
+    console.log(userId);
+    const data = await User.aggregate([
+      { $match: { _id: userId } },
+
+      {
+        $lookup: {
+          from: "courses",
+          localField: "enrolledCourses",
+          foreignField: "_id",
+          as: "enrolledCourses"
+        }
+      },
+
+      {
+        $unwind: {
+          path: "$enrolledCourses",
+          preserveNullAndEmptyArrays: false
+        }
+      },
+
+      {
+        $addFields: {
+          "enrolledCourses.enrollments": {
+            $filter: {
+              input: "$enrolledCourses.enrollments",
+              as: "enroll",
+              cond: { $eq: ["$$enroll.student", userId] }
+            }
+          }
+        }
+      },
+
+      {
+        $lookup: {
+          from: "lessons",
+          localField: "enrolledCourses.lessons",
+          foreignField: "_id",
+          as: "enrolledCourses.lessons"
+        }
+      },
+
+      {
+        $project: {
+          _id: 0,
+          "enrolledCourses._id": 1,
+          "enrolledCourses.title": 1,
+          "enrolledCourses.description": 1,
+          "enrolledCourses.thumbnail": 1,
+          "enrolledCourses.image": 1,
+          "enrolledCourses.duration": 1,
+          "enrolledCourses.category": 1,
+          "enrolledCourses.lessons": 1,
+          "enrolledCourses.enrollments.enrolledAt": 1,
+          "enrolledCourses.enrollments.progress": 1,
+          "enrolledCourses.enrollments.status": 1,
+          "enrolledCourses.enrollments.completed": 1
+        }
+      }
+    ]);
+     
+    const courses = data.map(d => d.enrolledCourses);
+     
+    res.status(200).json({
+      success: true,
+      courses
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error"
+    });
   }
 };
