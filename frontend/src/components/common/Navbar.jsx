@@ -50,7 +50,7 @@ const Navbar = () => {
                             </div>
                             <div className="hidden sm:block">
                                 <span className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-200">
-                                    Best Ideas Education
+                                    Quick Learn
                                 </span>
                             </div>
                         </Link>

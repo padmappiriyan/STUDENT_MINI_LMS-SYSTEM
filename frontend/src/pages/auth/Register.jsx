@@ -83,7 +83,7 @@ const Register = () => {
 
   return (
     <AuthLayout>
-      <h1 className="text-3xl font-bold mb-2 text-white">Best Ideas Education</h1>
+      <h1 className="text-3xl font-bold mb-2 text-white">Quick Learn</h1>
       <p className="text-gray-300 mb-6">Create your account to get started</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
