@@ -21,6 +21,7 @@ export const authAPI = {
   register: (data) => axiosInstance.post('/auth/register', data),
   getCurrentUser: () => axiosInstance.get('/auth/me'),
   getAllUsers: () => axiosInstance.get('/auth/users'),
+  getAllUserCourses:()=> axiosInstance.get('/auth/courses')
 };
 
 export const courseAPI = {
@@ -30,6 +31,7 @@ export const courseAPI = {
   updateCourse: (id, data) => axiosInstance.put(`/courses/${id}`, data),
   deleteCourse: (id) => axiosInstance.delete(`/courses/${id}`),
   enrollCourse: (id) => axiosInstance.post(`/courses/${id}/enroll`),
+  startCourse: (id) => axiosInstance.post(`/courses/${id}/start`),
 };
 
 export const lessonAPI = {
