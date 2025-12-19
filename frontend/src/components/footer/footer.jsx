@@ -6,13 +6,13 @@ const Footer = () => {
   const LinkSections = [
     {
       title: 'Quick Links',
-      links: ['Home', 'Privacy', 'Contact us', 'FAQ'],
-      hrefs: ['/', '/privacy', '/contact-us', '/faq']
+      links: ['Home', 'careers', 'Contact us', 'FAQ'],
+      hrefs: ['/', '/career', '/contact-us', '/faq']
     },
     {
       title: "Need Help?",
-      links: ["Return & Refund Policy", "Terms & Conditions", "How to Buy", "Contact Us"],
-      hrefs: ["/return-refund", "/terms-and-conditions", "/how-to-buy", "/contact"]
+      links: ["Partners",  "Contact Us"],
+      hrefs: ["/partners", "/contact"]
     },
     {
       title: "Follow Us",
