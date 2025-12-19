@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
 import { Toaster } from 'react-hot-toast';
 import ProtectedRoute from './components/ProtectedRoute';
+import { useAuthStore } from './store/authStore';
 
 import Footer from "./components/footer/footer";
 import NavbarSection from './components/Home/NavbarSection'; 
@@ -29,6 +29,10 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from "react";
 import ContactUs from './pages/student/ContactUs';
+import Career from './pages/student/Career';
+import Partners from './pages/student/Partners';
+import Navbar from './components/common/Navbar';
+import { matchPath } from "react-router-dom";
 
 function App() {
      useEffect(() => {
@@ -37,26 +41,31 @@ function App() {
   const location = useLocation();
 
   // Routes where footer should be hidden
-  const hideFooterRoutes = ["/login", "/register", "/student/dashboard", "/student/courses", "/student/course", "/student/lesson", "/student/quiz", "/student/chat", "/admin/dashboard", "/admin/courses", "/admin/create-course", "/admin/course", "/admin/lesson", "/admin/chat"];
+  const hideFooterRoutes = ["/login", "/register"];
   const shouldHideFooter = hideFooterRoutes.some(route => location.pathname.includes(route));
 
   // Routes where navbar should be shown (only public pages)
-  const showNavbarRoutes = ["/"]; 
-  const shouldShowNavbar = showNavbarRoutes.includes(location.pathname);
+  const hideNavbarRoutes = ["/","/login","/register","/about","/contact_us","/student/course/:id","/student/lesson/:id"]; 
+ const shouldHideNavbar =hideNavbarRoutes.includes(location.pathname) ||
+  matchPath("/student/course/:id", location.pathname) || matchPath("/student/lesson/:id", location.pathname) ;
 
   return (
     <div className="app min-h-screen w-full flex flex-col">
       {/* Show Navbar only on home page */}
-     
+       {!shouldHideNavbar && <Navbar/>}
       {/* Main content with flex-grow to push footer down */}
-      <main className="grow bg-black h-full">
+      <main className="grow bg-white h-full">
         <Routes>
           <Route path="/" element={<PublicHome />} />
           <Route path="/courseDetails/:id" element={<PublicCourseDetails />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path='/about' element={<About/>} />
-           <Route path='/contact_us' element={<ContactUs/>} />
+          <Route path='/contact_us' element={<ContactUs/>} />
+          <Route path='/career' element={<Career/>} />
+          <Route path='/partners' element={<Partners/>} />
+          <Route path='/courses' element={<StudentCourses />} />
+
           {/* Student Routes */}
           <Route
             path="/student/dashboard"
@@ -66,14 +75,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/student/courses"
-            element={
-              <ProtectedRoute requiredRole="student">
-                <StudentCourses />
-              </ProtectedRoute>
-            }
-          />
+          
           <Route
             path="/student/course/:id"
             element={
@@ -170,11 +172,9 @@ function App() {
 export default function AppWrapper() {
   return (
     <Router>
-      <AuthProvider>
-        <SocketProvider>
-          <App />
-        </SocketProvider>
-      </AuthProvider>
+      <SocketProvider>
+        <App />
+      </SocketProvider>
     </Router>
   );
 }
