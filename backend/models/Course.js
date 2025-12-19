@@ -51,6 +51,11 @@ const courseSchema = new mongoose.Schema(
           type: Number,
           default: 0,
         },
+        status: 
+        { type: String, 
+          enum: ['enrolled', 'started', 'completed'],
+           default: 'enrolled',
+        },
         completed: {
           type: Boolean,
           default: false,

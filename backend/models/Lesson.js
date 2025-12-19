@@ -18,6 +18,11 @@ const lessonSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    progress:{
+      type: Number,
+      required:true,
+      default:0
+    },
     resources: [
       {
         name: String,
